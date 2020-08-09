@@ -24,3 +24,9 @@ class JSON:
 
     def get_json_object_items(self):
         return self.data["items"]
+
+    def get_json_object_miners(self):
+        return self.data["miners"]
+
+    def get_json_object_buildings(self):
+        return self.data["buildings"]

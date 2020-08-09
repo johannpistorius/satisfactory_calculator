@@ -13,6 +13,13 @@ def get_ingredients_name():
     for items in data.get_json_object_items().items():
         print(items[1]["name"])
 
+def RepresentsInt(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
 
 if __name__ == "__main__":
     try:
@@ -33,16 +40,21 @@ if __name__ == "__main__":
             item = Ingredient(ingredient)
             print(item)
         elif command == "production":
-            ingredient = sys.argv[2]
-            quantity = sys.argv[3]
+            ingredient = ""
+            quantity = ""
+            for i in range(2, len(sys.argv)):
+                if not RepresentsInt(sys.argv[i]):
+                    ingredient += sys.argv[i]+" "
+                else:
+                    quantity = sys.argv[i]
+            ingredient = ingredient.rstrip()
             print("Command: " + command + " Ingredient: " + ingredient + " Quantity: " + quantity)
             item = Ingredient(ingredient)
-            data = item.get_ingredients_list()
-            prod = Production(len(data["ingredients"]))
-            prod.build_matrix_a(data)
-            prod.build_matrix_b(data)
-            prod.get_production()
+            data = item.get_ingredients_list_exhaustive()
+            prod = Production(data)
+            print(prod.get_production(quantity))
+            print("Power required: "+str(prod.get_power_consumption())+" MW")
         else:
-            print("Not a valid command : does not exist. See `help` for more info.")
+            sys.exit("Not a valid command : does not exist. See `help` for more info.")
     except IndexError:
-        print("Not a valid command : missing arguments. See `help` for more info.")
+        sys.exit("Not a valid command : missing arguments. See `help` for more info.")
