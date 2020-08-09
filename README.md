@@ -9,3 +9,5 @@ Console based satisfactory calculator
 ## Command
 
 - `python3 satifactory_calculator.py`
+
+*Thank you to SatisfactoryTools for json data file*
