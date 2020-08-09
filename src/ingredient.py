@@ -38,12 +38,10 @@ class Ingredient:
         ingredients_unvisited = []
         ingredients_visited = []
         ingredients = self.get_ingredient_child(classname)
-        print(ingredients["ingredients"])
         if ingredients:
             for i in range(0, len(ingredients["ingredients"])):
                 ingredients_unvisited.append(ingredients["ingredients"][i]["item"])
             self.out[classname] = ingredients
-            print(self.out)
         j = 0
         while j < len(ingredients_unvisited):
             if ingredients_unvisited[j] not in ingredients_visited:
@@ -68,7 +66,7 @@ class Ingredient:
                 recipe_id.append(recipe[1]["className"])
                 increment += 1
         if obj:
-            print("Recipe for: " + ingredient)
+            print("\nRecipe for: " + ingredient)
             for k, v in obj.items():
                 print("Number: " + str(k))
                 print("Recipe: " + str(v))
