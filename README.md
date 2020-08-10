@@ -6,6 +6,10 @@ Console based satisfactory calculator
 
 - `git clone https://github.com/johannpistorius/satisfactory_calculator.git`
 
+## Installation
+
+- `pip3 install sympy`
+
 ## Command
 
 - `python3 satifactory_calculator.py`
