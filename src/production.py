@@ -9,13 +9,32 @@ import sys
 
 class Production:
 
-    def __init__(self, data):
-        self.data = data
+    def __init__(self):
+        self.data = {}
+        self.quantity_per_minute = 0
         self.production = {}
         self.dict_var = {}
         self.unicode = 65
 
-    def get_production(self, quantity_per_minute):
+    def get_production_decoration(self):
+        buildings = JSON().get_json_object_buildings()
+        items = JSON().get_json_object_items()
+        self.production = self.get_production()
+        for (k, v) in self.dict_var.items():
+            if v in self.production:
+                output_value = self.production[v]
+                if k in self.data:
+                    print("Ingredient: "+self.data[k]["name"]+"\n"\
+                          "Number of buildings: "+str(output_value)+" "+buildings[self.data[k]["producedIn"][0]]["name"]+"\n"
+                          )
+                else:
+                    # Ore
+                    print("Ingredient: "+items[k]["name"]+"\n"\
+                          "Number of resource/min: "+str(output_value)+"\n"
+                          )
+
+
+    def get_production(self):
         matrix = Matrix([])
         classname = list(self.data.keys())[0]
         ingredients_unvisited = [classname]
@@ -40,7 +59,7 @@ class Production:
                                                                                                                  "products"][
                                                                                                                  0][
                                                                                                                  "amount"])
-                        output_equation = int(quantity_per_minute)
+                        output_equation = self.quantity_per_minute
                     else:
                         input_equation = self.build_input_equation(classname)
                         output_equation = self.build_output_equation(classname, self.dict_var[classname])
@@ -53,11 +72,8 @@ class Production:
                 matrix = matrix.row_insert(0, Matrix([[row_equation]]))
                 ingredients_visited.append(classname)
             increment += 1
-        print(matrix)
-        print(self.dict_var)
         self.production = solve(matrix)
         return self.production
-        # might need to update the styling of solution
 
     def add_var_to_dict(self, classname):
         var_name = chr(self.unicode)
@@ -90,8 +106,8 @@ class Production:
     def build_row_equation(self, input, output):
         return Add(output, Mul(input, -1))
 
-    def calculate_product_amount_building(self, classname, building, amount, quantity_per_minute, overclock=100):
-        return quantity_per_minute / self.calculate_product_amount_per_minute(classname, building, amount)
+    def calculate_product_amount_building(self, classname, building, amount, overclock=100):
+        return self.quantity_per_minute / self.calculate_product_amount_per_minute(classname, building, amount)
 
     def calculate_product_amount_per_minute(self, classname, building, amount, overclock=100):
         recipe_time = self.calculate_building_recipe_production_time(classname, building, overclock)
@@ -101,6 +117,9 @@ class Production:
         default_clock = 100
         manufacturing_speed = JSON().get_json_object_buildings()[building]["metadata"]["manufacturingSpeed"]
         return (default_clock / overclock) * self.data[classname]["time"] * (1 / (manufacturing_speed or 1))
+
+    def get_power_consumption_decoration(self):
+        print("Power required: " + str(self.get_power_consumption()) + " MW")
 
     def get_power_consumption(self):
         total_power_consumption = 0
@@ -117,3 +136,9 @@ class Production:
         power_consumption_exponent = buildings_info[building]["metadata"]["powerConsumptionExponent"]
         return Mul(num, Mul(Pow(overclock / 100, power_consumption_exponent or default_power_production_exponent),
                             power_consumption or 0))
+
+    def set_data(self, data):
+        self.data = data
+
+    def set_quantity_per_minute(self, qpm):
+        self.quantity_per_minute = qpm

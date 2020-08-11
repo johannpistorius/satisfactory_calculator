@@ -58,9 +58,11 @@ if __name__ == "__main__":
             print("Command: " + command + " Ingredient: " + ingredient + " Quantity: " + quantity)
             item = Ingredient(ingredient)
             data = item.get_ingredients_list_exhaustive()
-            prod = Production(data)
-            print(prod.get_production(quantity))
-            print("Power required: " + str(prod.get_power_consumption()) + " MW")
+            prod = Production()
+            prod.set_data(data)
+            prod.set_quantity_per_minute(int(quantity))
+            prod.get_production_decoration()
+            prod.get_power_consumption_decoration()
         else:
             sys.exit("Not a valid command : does not exist. See `help` for more info.")
     except IndexError:
